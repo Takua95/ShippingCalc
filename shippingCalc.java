@@ -24,9 +24,6 @@ import java.util.concurrent.TimeUnit;
 
 class shippingCalc
 {
-	
-	
-	
 	public static void main(String[] args) throws Exception, InterruptedException
 	{
 		List<List<String>> shipments;
@@ -46,14 +43,13 @@ class shippingCalc
 			{
 				CLS();
 				System.out.print(
-                    "\n------Main Menu------\n"+
-                    "1: Check if zip is in shipping area\n"+
-                    "2: Add to Shipping Order\n"+
-                    "3: Display Subtotal\n"+
-                    "4: Finish Shipping Order\n"+
-					"5: About Program\n"+
-					"6: Exit\n"+
-                    "\n->");
+                   			"\n------Main Menu------\n" +
+                    			"1: Check if zip is in shipping area\n" +
+                    			"2: Add to Shipping Order\n" +
+                    			"3: Display Subtotal\n" +
+                    			"4: Finish Shipping Order\n" +
+					"5: About Program\n" +
+					"6: Exit\n" + "\n->");
 				rawInput = scanner.nextLine();
 				if (tryParseInt(rawInput))
 				{
@@ -62,7 +58,7 @@ class shippingCalc
 					{ 
 						case 1:
 							CLS();
-							if	(ifShip(zipCodes) == 0)
+							if (ifShip(zipCodes) == 0)
 								System.out.print("\nNo, that is NOT in our area.");
 							else
 								System.out.print("\nYes, that is in our area.");
@@ -107,22 +103,22 @@ class shippingCalc
 	}
 	
 	public static boolean tryParseInt(String value) 
-    {  
-        try 
-        {  
-            Integer.parseInt(value);  
-            return true;  
-         } 
-        catch (NumberFormatException e) 
-        {  
-            return false;  
-        }  
-    }
+    	{  
+        	try 
+        	{  
+            		Integer.parseInt(value);  
+            		return true;  
+         	} 
+        	catch (NumberFormatException e) 
+        	{  
+            		return false;  
+        	}  
+    	}
 	
 	public static void CLS() throws IOException, InterruptedException 
 	{
-        new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-    }
+        	new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+    	}
 	
 	public static int ifShip(int[] zipCodes) throws InterruptedException
 	{
@@ -132,10 +128,11 @@ class shippingCalc
 		boolean exit = false;
 		while(!exit)
 		{
-			try{
+			try
+			{
 				System.out.print(
-						"\n------Zip Checker------\n"+
-						"\nPlease enter a valid U.S. zip code (or \"exit\" to exit).\n\n->");
+					"\n------Zip Checker------\n"+
+					"\nPlease enter a valid U.S. zip code (or \"exit\" to exit).\n\n->");
 				rawInput = scanner.nextLine();	
 				if (tryParseInt(rawInput))
 				{

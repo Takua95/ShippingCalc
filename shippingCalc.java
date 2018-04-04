@@ -9,26 +9,28 @@
  *the weight of the package. 
  */
 
-import java.util.Scanner;
-import java.io.File;
+
+
 import java.lang.Integer;
 import java.lang.Double;
-import java.util.stream.IntStream;
-import java.util.stream.DoubleStream;
+import java.lang.*;
+import java.io.File;
 import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.util.stream.IntStream;
+import java.util.stream.DoubleStream;
+import java.util.Scanner;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.ArrayUtils;
 import java.util.concurrent.TimeUnit;
-
+import java.util.Arrays;
 class shippingCalc
 {
 	public static void main(String[] args) throws Exception, InterruptedException
 	{
-		List<List<String>> shipments;
-		shipments = new ArrayList<List<String>>();
-		List<int> zipCodes = new List<int>[10];
+	    String[] shipments = new String[10];
+		//List<List<String>> shipments;
+		//shipments = new List<List<String>>();
+		int[] zipCodes = new int[10];
 		double[][] prices = new double[11][4];
 		try 
 		{
@@ -58,14 +60,19 @@ class shippingCalc
 					{ 
 						case 1:
 							CLS();
-							if (ifShip(zipCodes) == 0)
+							System.out.print("------Zip Checker------");
+							int temp = ifShip(zipCodes);
+							if (temp == 0)
 								System.out.print("\nNo, that is NOT in our area.");
+							else if (temp < 0)
+								System.out.print("\nCancelled.");
 							else
 								System.out.print("\nYes, that is in our area.");
 							Thread.sleep (2500);
 							break;
 						case 2:
 							CLS();
+							addShip(zipCodes, prices);
 							break;
 						case 3:
 							CLS();
@@ -103,17 +110,17 @@ class shippingCalc
 	}
 	
 	public static boolean tryParseInt(String value) 
-    	{  
-        	try 
-        	{  
-            		Integer.parseInt(value);  
-            		return true;  
-         	} 
-        	catch (NumberFormatException e) 
-        	{  
-            		return false;  
-        	}  
-    	}
+    {  
+		try
+		{
+			Integer.parseInt(value);
+			return true;
+		}
+		catch (NumberFormatException e) 
+        {  
+            return false;  
+        }  
+    }
 	
 	public static void CLS() throws IOException, InterruptedException 
 	{
@@ -122,7 +129,7 @@ class shippingCalc
 	
 	public static int ifShip(int[] zipCodes) throws InterruptedException
 	{
-		int selection = 0;
+		int selection2;
 		String rawInput;
 		Scanner scanner = new Scanner(System.in);
 		boolean exit = false;
@@ -131,21 +138,25 @@ class shippingCalc
 			try
 			{
 				System.out.print(
-					"\n------Zip Checker------\n"+
 					"\nPlease enter a valid U.S. zip code (or \"exit\" to exit).\n\n->");
 				rawInput = scanner.nextLine();	
 				if (tryParseInt(rawInput))
 				{
-					selection = Integer.parseInt(rawInput);
+					final int selection1 = Integer.parseInt(rawInput);
 					//if (!IntStream.of(zipCodes).anyMatch(x -> x == selection))
-					if (ArrayUtils.contains(zipCodes, selection))
-						selection = 0;
-					exit = true;
+					if ((IntStream.of(zipCodes).anyMatch(x -> x == selection1))) //(IntStream.of(zipCodes).anyMatch(x -> x == selection)) // (contains(zipCodes, selection)) 
+						return selection1;
+					else
+						return 0;
 				}
-				else if (rawInput == "exit")
+				else if (rawInput == "exit" || rawInput.startsWith("e"))
+				{
 					exit = true;
+					return -1;
+				}
 				else
 				{
+					
 					System.out.print("\nInvalid Input!");
 					Thread.sleep (2500);
 				}
@@ -153,7 +164,46 @@ class shippingCalc
 			catch (InterruptedException e){
 			}
 		}
-		return selection;
+		return -1;
+	}
+	
+	public static String[] addShip(int[]zipCodes, double[][]prices) throws InterruptedException
+	{
+		String[] temp = new String[1];
+		try{
+			
+			String rawInput;
+			Scanner scanner = new Scanner(System.in);
+			boolean exit = false;
+			int zip = ifShip(zipCodes);
+			if (zip != 0)
+			{
+				while(!exit)
+				{
+					System.out.print("\n\nPlease enter the package weight.\n\n->");
+					rawInput = scanner.nextLine();	
+					if (tryParseInt(rawInput))
+					{
+						
+					}
+					else
+					{
+						
+					}
+				}
+			}
+			else if (zip < 0)
+				System.out.print("\nCancelled.");
+			else
+				System.out.print("\nNo, that is NOT in our area.");
+			return temp;
+		}
+		catch (Exception e)
+		{
+			System.out.print("\nProgram Crashed!  Terminating...");
+			Thread.sleep (2500);
+		}
+		return temp;
 	}
 	
 	public static int[] readFile(int[] zipCodes) throws FileNotFoundException

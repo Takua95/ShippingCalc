@@ -1,7 +1,7 @@
 package com.company;
 
 //Christian Brannon, ID: 1593881
-//ITSE 2317-5001, 03.11.18
+//ITSE 2317-5001, 04.13.18
 //Assignment: Shipping Prices
 
 //shippingCalc: Main File
@@ -11,29 +11,32 @@ package com.company;
  *the weight of the package.
  */
 
-
-
 import java.lang.Integer;
 import java.lang.Double;
 import java.lang.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.stream.IntStream;
-class shippingCalc
+
+class Main
 {
     public static void main(String[] args) throws Exception, InterruptedException
     {
-        String[] shipments = new String[10];
-        //List<List<String>> shipments;
-        //shipments = new List<List<String>>();
         int[] zipCodes = new int[10];
+
+        List<Package> packages = new ArrayList<Package>();
+
         double[][] prices = new double[11][4];
+
         try
         {
+            Package temp = new Package();
             zipCodes = readFile(zipCodes);
             prices = readFile(prices);
+
             Scanner scanner = new Scanner(System.in);
             boolean exit = false;
             int selection;
@@ -46,7 +49,7 @@ class shippingCalc
                         "\n------Main Menu------\n" +
                                 "1: Check if zip is in shipping area\n" +
                                 "2: Add to Shipping Order\n" +
-                                "3: Display Subtotal\n" +
+                                "3: Display Shippments\n" +
                                 "4: Finish Shipping Order\n" +
                                 "5: About Program\n" +
                                 "6: Exit\n" + "\n->");
@@ -59,10 +62,11 @@ class shippingCalc
                         case 1:
                             CLS();
                             System.out.print("------Zip Checker------");
-                            int temp = ifShip(zipCodes);
-                            if (temp == 0)
+                            //Package temp = new Package();
+                            temp.ifShip(zipCodes);
+                            if (Integer.parseInt(temp.getZip()) == 0)
                                 System.out.print("\nNo, that is NOT in our area.");
-                            else if (temp < 0)
+                            else if (Integer.parseInt(temp.getZip()) == 2)
                                 System.out.print("\nCancelled.");
                             else
                                 System.out.print("\nYes, that is in our area.");
@@ -70,9 +74,13 @@ class shippingCalc
                             break;
                         case 2:
                             CLS();
-                            addShip(zipCodes, prices);
+                            Package temp2;
+                            temp2 = addShip(zipCodes, prices);
+                            if(Integer.parseInt(temp2.getZip()) > 2)
+                                packages.add(temp2);
                             break;
                         case 3:
+                            PrintShipments(packages);
                             CLS();
                             break;
                         case 4:
@@ -123,72 +131,16 @@ class shippingCalc
     public static void CLS() throws IOException, InterruptedException
     { new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor(); }
 
-    public static int ifShip(int[] zipCodes) throws InterruptedException
+    public static Package addShip(int[]zipCodes, double[][]prices) throws InterruptedException
     {
-        int selection2;
-        String rawInput;
-        Scanner scanner = new Scanner(System.in);
-        boolean exit = false;
-        while(!exit)
-        {
-            try
-            {
-                System.out.print(
-                        "\nPlease enter a valid U.S. zip code (or \"exit\" to exit).\n\n->");
-                rawInput = scanner.nextLine();
-                if (tryParseInt(rawInput))
-                {
-                    final int selection1 = Integer.parseInt(rawInput);
-                    //if (!IntStream.of(zipCodes).anyMatch(x -> x == selection))
-                    if ((IntStream.of(zipCodes).anyMatch(x -> x == selection1))) //(IntStream.of(zipCodes).anyMatch(x -> x == selection)) // (contains(zipCodes, selection))
-                        return selection1;
-                    else
-                        return 0;
-                }
-                else if (rawInput == "exit" || rawInput.startsWith("e"))
-                {
-                    exit = true;
-                    return -1;
-                }
-                else
-                {
-
-                    System.out.print("\nInvalid Input!");
-                    Thread.sleep (2500);
-                }
-            }
-            catch (InterruptedException e){
-            }
-        }
-        return -1;
-    }
-
-    public static String[] addShip(int[]zipCodes, double[][]prices) throws InterruptedException
-    {
-        String[] temp = new String[1];
+        Package temp = new Package(zipCodes, prices);
         try{
-
-            String rawInput;
-            Scanner scanner = new Scanner(System.in);
             boolean exit = false;
-            int zip = ifShip(zipCodes);
-            if (zip != 0)
+            if (Integer.parseInt(temp.getZip()) != 0)
             {
-                while(!exit)
-                {
-                    System.out.print("\n\nPlease enter the package weight.\n\n->");
-                    rawInput = scanner.nextLine();
-                    if (tryParseInt(rawInput))
-                    {
-                        
-                    }
-                    else
-                    {
 
-                    }
-                }
             }
-            else if (zip < 0)
+            else if (Integer.parseInt(temp.getZip()) < 0)
                 System.out.print("\nCancelled.");
             else
                 System.out.print("\nNo, that is NOT in our area.");
@@ -199,6 +151,7 @@ class shippingCalc
             System.out.print("\nProgram Crashed!  Terminating...");
             Thread.sleep (2500);
         }
+
         return temp;
     }
 
@@ -261,5 +214,15 @@ class shippingCalc
                             CD + "\\resources\\prices.txt");
         }
         return prices;
+    }
+
+    public static void PrintShipments(List<Package> packages)
+    {
+        int i = 1;
+        for (Package packageTemp : packages)
+        {
+            System.out.println("Package #" + i + "\n" + packageTemp.printInfo());
+            i++;
+        }
     }
 }
